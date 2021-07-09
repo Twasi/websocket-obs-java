@@ -6,9 +6,9 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-abstract class SceneChangedEvent extends Event {
+abstract class SceneEvent extends Event {
 
-  protected SceneChangedEvent(Type eventType, Category category) {
+  protected SceneEvent(Type eventType, Category category) {
     super(eventType, category);
   }
 

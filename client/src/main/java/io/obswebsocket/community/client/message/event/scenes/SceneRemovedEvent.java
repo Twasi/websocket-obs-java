@@ -5,9 +5,17 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-public class SceneRemovedEvent extends SceneChangedEvent {
+public class SceneRemovedEvent extends SceneEvent {
+
+  private Data eventData;
 
   protected SceneRemovedEvent() {
     super(Type.SceneRemoved, Category.Scenes);
+  }
+
+  @Getter
+  @ToString(callSuper = true)
+  public static class Data extends SceneEvent.Data {
+    private Boolean isGroup;
   }
 }

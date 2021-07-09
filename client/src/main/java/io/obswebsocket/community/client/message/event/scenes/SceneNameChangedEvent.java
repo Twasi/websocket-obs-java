@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-public class SceneNameChangedEvent extends SceneChangedEvent {
+public class SceneNameChangedEvent extends SceneEvent {
 
   private Data eventData;
 
@@ -15,7 +15,7 @@ public class SceneNameChangedEvent extends SceneChangedEvent {
 
   @Getter
   @ToString(callSuper = true)
-  public static class Data extends SceneChangedEvent.Data {
+  public static class Data extends SceneEvent.Data {
 
     private String oldSceneName;
   }
