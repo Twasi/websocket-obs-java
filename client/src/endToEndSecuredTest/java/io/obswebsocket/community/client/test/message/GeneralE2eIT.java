@@ -3,7 +3,11 @@ package io.obswebsocket.community.client.test.message;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 
+import com.google.gson.JsonObject;
 import io.obswebsocket.community.client.OBSRemoteController;
+import io.obswebsocket.community.client.message.event.general.CustomEvent;
+import io.obswebsocket.community.client.message.request.general.BroadcastCustomEventRequest;
+import io.obswebsocket.community.client.message.response.general.BroadcastCustomEventResponse;
 import io.obswebsocket.community.client.message.response.general.GetVersionResponse;
 import io.obswebsocket.community.client.test.AbstractObsE2ETest;
 import java.util.concurrent.CompletableFuture;
@@ -16,6 +20,8 @@ import org.junit.jupiter.api.Test;
 
 public class GeneralE2eIT extends AbstractObsE2ETest {
 
+
+
   @BeforeEach
   void setUp() throws Exception {
     // Start and block on connect, to ensure test runs as expected
@@ -25,6 +31,7 @@ public class GeneralE2eIT extends AbstractObsE2ETest {
       .lifecycle()
         .onReady(() -> ready.complete(null))
         .and()
+      .registerEventListener(CustomEvent.class, capturingCallback)
       .build();
     remote.connect();
     ready.get();
@@ -51,7 +58,20 @@ public class GeneralE2eIT extends AbstractObsE2ETest {
 
   @Test
   void broadcastCustomEvent() {
-    fail("not implemented");
+    JsonObject eventData = new JsonObject();
+    eventData.addProperty("customEventType", "customEvent");
+    eventData.addProperty("boolean", true);
+    eventData.addProperty("integer", 10);
+    remote.broadcastCustomEvent(eventData, capturingCallback);
+
+    BroadcastCustomEventResponse response = getPreviousResponseAs(BroadcastCustomEventResponse.class);
+    CustomEvent event = getPreviousResponseAs(CustomEvent.class);
+
+    assertThat(response.isSuccessful()).isTrue();
+    assertThat(event.getEventData().get("customEventType")).isEqualTo("customEvent");
+    assertThat(event.getEventData().get("boolean").getAsBoolean()).isEqualTo(true);
+    assertThat(event.getEventData().get("integer").getAsInt()).isEqualTo(10);
+    
   }
 
   @Disabled
